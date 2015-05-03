@@ -90,3 +90,15 @@ puts %/This is alledgedly stupid - again/
 puts %Q|This is the smartest|
 
 puts "Holy shit, this is 2015. Does it still work? \a" #haha it does
+
+print "What's ur name? "
+name = gets.chomp
+print "And ur age? "
+age = gets.chomp
+print "And ur fat? "
+weight = gets.chomp
+
+summ = age + weight #dynamic my ass - this is string concat - you need to do gets.chomp.to_i
+puts summ
+
+puts "%{name} is %{age} years old and %{weight} fat" % {name: name, age: age, weight: weight}
