@@ -25,3 +25,9 @@ roads  = 100
 puts "The city of #{city} has #{people} and #{cars} for #{roads}"
 puts "That's #{cars / people} cars per each person"
 
+my_name = "Gerula"
+my_weight = 230
+my_height = 6
+
+puts "Hello, my name is #{my_name}, my height is #{my_height} feet and my I weigh in at #{my_weight}"
+puts "That's #{my_weight / 2.0} in kilograms and #{my_height * 30 / 100.0} in meters"
