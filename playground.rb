@@ -62,3 +62,22 @@ puts formatter % {
 	third: "3"
 }
 
+days = "Monday\nTuesday\nWednesday\nThurs\\nday"
+puts days
+
+puts """
+hahaha
+ha
+haha
+"""
+puts "ha"
+
+#luckly I searched the web for this. It works for single quotes too
+
+puts "1haha
+2hahaha
+3haha"
+
+#apparently this is from Python and Zed recycled the chapters. Hey, it's a free book, not complaining.
+
+
