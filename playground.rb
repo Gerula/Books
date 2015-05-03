@@ -17,3 +17,11 @@ puts "Is 5 larger than 3? #{5>3}"
 puts 2.001
 puts 2.001 * 2
 
+city   = "Seattle"
+people = 1000000.0
+cars   = 700000.0
+roads  = 100
+
+puts "The city of #{city} has #{people} and #{cars} for #{roads}"
+puts "That's #{cars / people} cars per each person"
+
