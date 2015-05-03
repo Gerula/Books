@@ -80,4 +80,11 @@ puts "1haha
 
 #apparently this is from Python and Zed recycled the chapters. Hey, it's a free book, not complaining.
 
+# I got the escaping part, it's the same as in all languages
+# so i'll do some examples from here: http://rors.org/2008/10/26/dont-escape-in-strings
 
+puts "This is alledgedly stupid: \"Stupid\""
+puts %-This is alledgedly smarter: "Stupid"- # in a nutshell, %- - is like @ in C# but that's not all it's more
+
+puts %/This is alledgedly stupid - again/
+puts %Q|This is the smartest|
