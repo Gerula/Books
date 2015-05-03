@@ -88,3 +88,5 @@ puts %-This is alledgedly smarter: "Stupid"- # in a nutshell, %- - is like @ in 
 
 puts %/This is alledgedly stupid - again/
 puts %Q|This is the smartest|
+
+puts "Holy shit, this is 2015. Does it still work? \a" #haha it does
