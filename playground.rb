@@ -92,13 +92,23 @@ puts %Q|This is the smartest|
 puts "Holy shit, this is 2015. Does it still work? \a" #haha it does
 
 print "What's ur name? "
-name = gets.chomp
+#name = gets.chomp
+name = ""
 print "And ur age? "
-age = gets.chomp
+#age = gets.chomp
+age = ""
 print "And ur fat? "
-weight = gets.chomp
+#weight = gets.chomp
+weight = ""
 
 summ = age + weight #dynamic my ass - this is string concat - you need to do gets.chomp.to_i
 puts summ
 
 puts "%{name} is %{age} years old and %{weight} fat" % {name: name, age: age, weight: weight}
+
+print "Gimme a number"
+number = gets.chomp.to_f
+print "Gimme some moneys"
+moneyz = gets.chomp.to_f
+
+puts "This is #{number} percent added to ur monez: #{moneyz + number/100*moneyz}"
