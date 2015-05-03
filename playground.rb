@@ -38,3 +38,10 @@ puts name_city_
 name_city_ = "This is a string without 2xquotes: #{name_city}"
 puts name_city_
 puts name_city
+
+puts "Interesting #{'thing'}"
+puts "." * 10 # haaaaaa. Awesome x 10
+
+puts ("x" + "y") * 10 #chhhhhahhaahhaa
+
+
