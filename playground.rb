@@ -44,4 +44,21 @@ puts "." * 10 # haaaaaa. Awesome x 10
 
 puts ("x" + "y") * 10 #chhhhhahhaahhaa
 
+formatter = "%{first} %{second} %{third}"
+
+puts formatter % {
+	first: 1,
+	second: "haha",
+	third: "chhhh"
+}
+
+puts formatter % {
+	first: formatter % {
+		first: "->1",
+		second: "->2",
+		third: "->3"
+		},
+	second: "2nd",
+	third: "3"
+}
 
