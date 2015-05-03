@@ -31,3 +31,10 @@ my_height = 6
 
 puts "Hello, my name is #{my_name}, my height is #{my_height} feet and my I weigh in at #{my_weight}"
 puts "That's #{my_weight / 2.0} in kilograms and #{my_height * 30 / 100.0} in meters"
+
+name_city = city + " " + my_name
+name_city_ = 'This is a string without 2xquotes: #{name_city}' # formatting doesn't work for single quotes
+puts name_city_
+name_city_ = "This is a string without 2xquotes: #{name_city}"
+puts name_city_
+puts name_city
