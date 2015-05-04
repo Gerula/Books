@@ -12,6 +12,6 @@ puts "Third #{third}"
 puts ARGV.inspect
 
 print "username ", prompt
-username = $stdin.gets.chomp # apparently if you use ARGV you need to explicitly specify $stdin
+username = $stdin.gets.chomp # apparently if you use ARGV you need to exPlicitly specify $stdin
 			     # as it will default to ARGV.first otherwise
 puts "Username:#{username}"
