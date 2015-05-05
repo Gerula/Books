@@ -7,3 +7,4 @@ filename = $stdin.gets.chomp
 actualFile = open(filename)
 puts actualFile.read
 actualFile.close
+
