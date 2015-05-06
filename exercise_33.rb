@@ -30,3 +30,9 @@ end
 numbers = fillArray(10, 2)
 print numbers
 
+puts numbers[0]
+puts numbers.first
+
+numbers_big = [numbers, [numbers, 2]]
+
+print numbers_big
