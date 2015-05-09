@@ -18,9 +18,3 @@ class Room
 	end
 end
 
-room = Room.new("Champaigne room", "No sex in here")
-room.add_path({"left" => "no sex"})
-room.add_path({"right" => "still no sex"})
-puts room.go("left")
-puts room.inspect
-
