@@ -14,19 +14,20 @@
 #
 
 Struct.new("Book", :title, :author)
-$books = [Struct::Book.new("Emergent Design", "Scott Bain")]
-$books += [Struct::Book.new("Ermagerd Design", "Scott Bain")]
-$books += [Struct::Book.new("Emergen Design", "Scott Bain")]
-$books += [Struct::Book.new("Egent Design", "Scott Bain")]
-$books += [Struct::Book.new("xoxoxoxo Design", "Scott Bain")]
-$books += [Struct::Book.new("Forth Design", "Scott Bain")]
+book = Struct::Book
+$books = [book.new("Emergent Design", "Scott Bain")]
+$books += [book.new("Ermagerd Design", "Scott Bain")]
+$books += [book.new("Emergen Design", "Scott Bain")]
+$books += [book.new("Egent Design", "Scott Bain")]
+$books += [book.new("xoxoxoxo Design", "Scott Bain")]
+$books += [book.new("Forth Design", "Scott Bain")]
+
+puts $books
 
 class TitleExtractor
 	def extract_titles()
 		raise("Please don't use this directly. It's just bad Karma")
 	end
 end
-
-
 
 TitleExtractor.new.extract_titles
