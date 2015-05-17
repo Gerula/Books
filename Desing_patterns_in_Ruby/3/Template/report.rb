@@ -1,8 +1,11 @@
 class Report
     def initialize
-        @title = "Montly report"
+        @title = "Monthly report"
         @text = ["Things are going", "straight to shit"]
     end
+
+    attr_reader :title
+    attr_reader :text
 
     def output_report
         output_start
@@ -14,25 +17,25 @@ class Report
     end
     
     def output_start
-        raise("not implemented")
+        raise(NotImplementedError, "not implemented")
     end
 
     def output_head
-        raise("not implemented")
+        raise(NotImplementedError, "not implemented")
     end
 
     def output_body_start
     end
 
     def output_body
-        raise("not implemented")
+        raise(NotImplementedError, "not implemented")
     end
 
     def output_body_end
     end
 
     def output_end
-        raise("not implemented")
+        raise(NotImplementedError, "not implemented")
     end
 end
 
