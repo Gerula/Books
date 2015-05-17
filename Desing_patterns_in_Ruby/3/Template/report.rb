@@ -5,17 +5,36 @@ class Report
     end
 
     def output_report
-        puts "<html>"
-        puts "  <head>"
-        puts "      <title>#{@title}</title>"
-        puts "  </head>"
-        puts "  <body>"
-        @text.each { |line|
-            puts "      <p> #{line} </p>"
-        }
-        puts "  </body>"
-        puts "</html>"
+        output_start
+        output_head
+        output_body_start
+        output_body
+        output_body_end
+        output_end
+    end
+    
+    def output_start
+        raise("not implemented")
+    end
+
+    def output_head
+        raise("not implemented")
+    end
+
+    def output_body_start
+        raise("not implemented")
+    end
+
+    def output_body
+        raise("not implemented")
+    end
+
+    def output_body_end
+        raise("not implemented")
+    end
+
+    def output_end
+        raise("not implemented")
     end
 end
 
-Report.new.output_report
