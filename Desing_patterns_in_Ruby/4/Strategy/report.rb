@@ -31,7 +31,8 @@ class Report
         @text = text
     end
 
-    def print
+    def print(code = nil)
+        code.call unless code == nil
         @formatter.output_report(self)
     end
 
@@ -44,3 +45,34 @@ report = Report.new(Text_formatter.new, "Status", ["Everything sucks", "badly"])
 report.print
 report.formatter = Html_formatter.new
 report.print
+
+var = "nothing"
+
+hello = lambda do
+    var = "something"
+    puts "Inside lambda"
+end
+puts var
+report.print(hello)
+puts var
+
+report.print(lambda{ puts "what's up what's up?" })
+
+puts lambda{ |x, y, z| x + y + z}.call(1, 2, 3)
+
+def run_stuff
+    puts "Running things"
+    yield unless !block_given?
+    puts "Finished running these things"
+end
+
+run_stuff {
+    puts "Executing"
+}
+
+run_stuff do 
+    puts "executing 2"
+end
+
+
+
