@@ -1,27 +1,23 @@
-class Html_formatter
-    def output_report(report)
-        puts "<html>"
-        puts "  <head>"
-        puts "      <title>#{report.title}</title>"
-        puts "  </head>"
-        puts "  <body>"
-        report.text.each { |x|
-            puts "      <p> #{x} </p>"
-        }
+html_formatter = lambda do |report|
+    puts "<html>"
+    puts "  <head>"
+    puts "      <title>#{report.title}</title>"
+    puts "  </head>"
+    puts "  <body>"
+    report.text.each { |x|
+        puts "      <p> #{x} </p>"
+    }
 
-        puts "  </body>"
-        puts "</html>"
-    end
+    puts "  </body>"
+    puts "</html>"
 end
 
-class Text_formatter
-    def output_report(report)
-        puts "--- Begin report ---"
-        puts " Title #{report.title}"
-        report.text.each { |x|
-            puts x
-        }
-   end
+text_formatter = lambda do |report|
+    puts "--- Begin report ---"
+    puts " Title #{report.title}"
+    report.text.each { |x|
+        puts x
+    }
 end
 
 class Report
@@ -31,9 +27,8 @@ class Report
         @text = text
     end
 
-    def print(code = nil)
-        code.call unless code == nil
-        @formatter.output_report(self)
+    def print
+        @formatter.call(self)
     end
 
     attr_accessor :formatter
@@ -41,9 +36,9 @@ class Report
     attr_reader :text
 end
 
-report = Report.new(Text_formatter.new, "Status", ["Everything sucks", "badly"])
+report = Report.new(text_formatter, "Status", ["Everything sucks", "badly"])
 report.print
-report.formatter = Html_formatter.new
+report.formatter = html_formatter
 report.print
 
 var = "nothing"
@@ -53,10 +48,6 @@ hello = lambda do
     puts "Inside lambda"
 end
 puts var
-report.print(hello)
-puts var
-
-report.print(lambda{ puts "what's up what's up?" })
 
 puts lambda{ |x, y, z| x + y + z}.call(1, 2, 3)
 
