@@ -40,9 +40,11 @@ class Report
     def print
         @formatter.output_report(@title, @text)
     end
+
+    attr_accessor :formatter
 end
 
 report = Report.new(Text_formatter.new, "Status", ["Everything sucks", "badly"])
 report.print
-report = Report.new(Html_formatter.new, "Status", ["Everything sucks", "badly"])
+report.formatter = Html_formatter.new
 report.print
