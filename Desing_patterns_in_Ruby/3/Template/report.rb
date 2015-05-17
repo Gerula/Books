@@ -22,7 +22,6 @@ class Report
     end
 
     def output_body_start
-        raise("not implemented")
     end
 
     def output_body
@@ -30,7 +29,6 @@ class Report
     end
 
     def output_body_end
-        raise("not implemented")
     end
 
     def output_end
