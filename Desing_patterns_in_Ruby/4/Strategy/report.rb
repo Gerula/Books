@@ -1,17 +1,17 @@
 class Formatter
-    def output_report(title, text)
+    def output_report(report)
         raise NotImplementedError, "Not implemented"
     end
 end
 
 class Html_formatter < Formatter
-    def output_report(title, text)
+    def output_report(report)
         puts "<html>"
         puts "  <head>"
-        puts "      <title>#{title}</title>"
+        puts "      <title>#{report.title}</title>"
         puts "  </head>"
         puts "  <body>"
-        text.each { |x|
+        report.text.each { |x|
             puts "      <p> #{x} </p>"
         }
 
@@ -21,10 +21,10 @@ class Html_formatter < Formatter
 end
 
 class Text_formatter < Formatter
-    def output_report(title, text)
+    def output_report(report)
         puts "--- Begin report ---"
-        puts " Title #{title}"
-        text.each { |x|
+        puts " Title #{report.title}"
+        report.text.each { |x|
             puts x
         }
    end
@@ -38,10 +38,12 @@ class Report
     end
 
     def print
-        @formatter.output_report(@title, @text)
+        @formatter.output_report(self)
     end
 
     attr_accessor :formatter
+    attr_reader :title
+    attr_reader :text
 end
 
 report = Report.new(Text_formatter.new, "Status", ["Everything sucks", "badly"])
