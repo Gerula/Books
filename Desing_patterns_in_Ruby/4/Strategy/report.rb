@@ -1,10 +1,4 @@
-class Formatter
-    def output_report(report)
-        raise NotImplementedError, "Not implemented"
-    end
-end
-
-class Html_formatter < Formatter
+class Html_formatter
     def output_report(report)
         puts "<html>"
         puts "  <head>"
@@ -20,7 +14,7 @@ class Html_formatter < Formatter
     end
 end
 
-class Text_formatter < Formatter
+class Text_formatter
     def output_report(report)
         puts "--- Begin report ---"
         puts " Title #{report.title}"
