@@ -13,8 +13,17 @@ class Employee
     end
 
     def salary=(new_salary)
-        @salary = new_salary
-        notify_observers
+        unless new_salary == @salary
+            @salary = new_salary
+            notify_observers
+        end
+    end
+
+    def title=(new_title)
+        unless new_title == @title
+            @title = new_title
+            notify_observers
+        end
     end
 end
 
