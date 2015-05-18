@@ -1,30 +1,20 @@
+require_relative "Subject"
+
 class Employee
+    include Subject
+
     attr_reader :name, :title, :salary
 
     def initialize(name, title, salary)
+        super()
         @name = name
         @title = title
         @salary = salary
-        @observers = []
     end
 
     def salary=(new_salary)
         @salary = new_salary
         notify_observers
-    end
-
-    def notify_observers
-        @observers.each {|observer|
-            observer.notify(self)
-        }
-    end
-
-    def register_observer(observer)
-        @observers << observer
-    end
-
-    def unregister_observer(observer)
-        @observers.delete(observer)
     end
 end
 
