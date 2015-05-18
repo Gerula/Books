@@ -1,7 +1,7 @@
-require_relative "Subject"
+require "observer"
 
 class Employee
-    include Subject
+    include Observable
 
     attr_reader :name, :title, :salary
 
@@ -14,19 +14,20 @@ class Employee
 
     def salary=(new_salary)
         @salary = new_salary
-        notify_observers
+        changed
+        notify_observers(self)
     end
 end
 
 class Payroll
-    def notify(employee)
+    def update(employee)
         puts "Send a check to #{employee.name}"
         puts "His salary is now #{employee.salary}"
     end
 end
 
 class Irs
-    def notify(employee)
+    def update(employee)
         puts "Will need to collect some taxes from #{employee.name} for the sum of #{employee.salary}"
     end
 end
@@ -37,9 +38,9 @@ flintstone.salary += 10000
 puts flintstone.inspect
 payroll = Payroll.new
 irs = Irs.new
-flintstone.register_observer(irs)
-flintstone.register_observer(payroll)
+flintstone.add_observer(irs)
+flintstone.add_observer(payroll)
 flintstone.salary -= 100
-flintstone.unregister_observer(payroll)
+flintstone.delete_observer(payroll)
 flintstone.salary -= 100
 
