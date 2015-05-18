@@ -4,7 +4,7 @@
 
 class ArrayIterator
     def initialize(array)
-        @array = array
+        @array = Array.new(array)
         @index = 0
     end
 
@@ -29,8 +29,3 @@ while it.has_next?
     puts "Item #{it.next_item}"
 end
 
-it = ArrayIterator.new("abcdefghij")
-
-while it.has_next?
-    puts "Item #{it.next_item}"
-end
