@@ -1,10 +1,11 @@
 # Composite pattern - the sum acts like one of the parts
 
 class Task
-    attr_reader :name
+    attr_accessor :name, :parent
 
     def initialize(name)
         @name = name
+        @parent = nil
     end
 
     def get_time_required
@@ -40,10 +41,12 @@ class CompositeTask < Task
 
     def <<(task)
         @sub_tasks << task
+        task.parent = self
     end
 
     def [](index)
         @sub_tasks[index]
+        task.parent = nil
     end
 
     def remove_sub_task(task)
