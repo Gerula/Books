@@ -38,8 +38,12 @@ class CompositeTask < Task
         @sub_tasks = []
     end
 
-    def add_sub_task(task)
+    def <<(task)
         @sub_tasks << task
+    end
+
+    def [](index)
+        @sub_tasks[index]
     end
 
     def remove_sub_task(task)
@@ -54,8 +58,8 @@ end
 class MakeBatterTask < CompositeTask
     def initialize
         super("Make batter")
-        add_sub_task(AddDryIngredientsTask.new)
-        add_sub_task(MixIngredientsTask.new)
+        self << (AddDryIngredientsTask.new)
+        self << (MixIngredientsTask.new)
     end
 end
 
