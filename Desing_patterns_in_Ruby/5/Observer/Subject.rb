@@ -5,15 +5,15 @@ module Subject
 
     def notify_observers
         @observers.each {|observer|
-            observer.notify(self)
+            observer.call(self)
         }
     end
 
-    def register_observer(observer)
+    def add_observer(&observer)
         @observers << observer
     end
 
-    def unregister_observer(observer)
+    def delete_observer(observer)
         @observers.delete(observer)
     end
 end
