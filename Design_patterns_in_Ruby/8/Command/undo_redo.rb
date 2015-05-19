@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class Command
     attr_reader :description
 
@@ -6,6 +8,9 @@ class Command
     end
 
     def execute
+    end
+
+    def unexecute
     end
 end
 
@@ -21,16 +26,25 @@ class CreateFile < Command
         f.write(@contents)
         f.close
     end
+
+    def unexecute
+        File.delete(@path)
+    end
 end
 
 class DeleteFile < Command
     def initialize(path)
         super("Delete file #{path}")
         @path = path
+        @contents = File.read(@path) if File.exists?(@path)
     end
 
     def execute
         File.delete(@path)
+    end
+
+    def unexecute
+        File.open(@path, "w").write(@contents)
     end
 end
 
@@ -42,7 +56,11 @@ class CopyFile < Command
     end
 
     def execute
-        File.copy(@source, @destination)
+        FileUtils.copy(@source, @destination)
+    end
+
+    def unexecute
+        File.delete(@destination)
     end
 end
 
@@ -62,6 +80,10 @@ class CompositeCommand < Command
     def description
         @commands.map{|x| x.description}.join("\n")
     end
+
+    def unexecute
+        @commands.reverse_each{|command| command.unexecute}
+    end
 end
 
 commands = CompositeCommand.new
@@ -71,3 +93,6 @@ commands << DeleteFile.new("NewFile")
 commands << DeleteFile.new("NewFile2")
 
 puts commands.description
+
+commands.execute
+commands.unexecute
