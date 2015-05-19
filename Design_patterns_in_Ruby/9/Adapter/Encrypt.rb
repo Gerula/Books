@@ -46,4 +46,10 @@ output = StringIOAdapter.new("")
 Encrypter.new(key).encrypt(input, output)
 puts output
 
+class Fixnum
+    def abs
+        42
+    end
+end
 
+puts -1.abs
