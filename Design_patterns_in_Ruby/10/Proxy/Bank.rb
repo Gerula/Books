@@ -38,11 +38,33 @@ class BankAccountProxy
     end
 
     def check_login
-        if Etc.getlogin != @owner
-            raise "Not authorized:"
-        end
     end
 end  
+
+class VirtualProxy
+    def initialize(initialbalance = 0)
+        @initialbalance = initialbalance
+    end
+
+    def balance
+        s = subject
+        s.balance
+    end
+
+    def deposit(money)
+        s = subject
+        s.deposit(money)
+    end
+
+    def withdraw(money)
+        s = subject
+        s.withdraw(money)
+    end
+
+    def subject
+        @subject ||  (@subject = BankAccount.new(@initialbalance))
+    end
+end
 
 ba = BankAccount.new(100)
 ba.deposit(10)
@@ -52,3 +74,9 @@ bap = BankAccountProxy.new(ba, "Gerula")
 bap.deposit(10)
 bap.withdraw(50)
 puts bap.inspect
+
+vap = VirtualProxy.new(1000)
+vap.deposit(10)
+vap.withdraw(50)
+puts vap.inspect
+
