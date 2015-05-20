@@ -22,28 +22,14 @@ class BankAccountProxy
         @owner = owner
     end
 
-    def balance
-        check_login
-        @real_bank_account.balance
-    end
-
-    def deposit(money)
-        check_login
-        @real_bank_account.deposit(money)
-    end
-
-    def withdraw(money)
-        check_login
-        @real_bank_account.withdraw(money)
-    end
-
-    def check_login
+    def method_missing(name, *args)
+        @real_bank_account.send(name, *args)
     end
 end  
 
 class VirtualProxy
-    def initialize(initialbalance = 0)
-        @initialbalance = initialbalance
+    def initialize(&creator)
+        @creator = creator
     end
 
     def balance
@@ -62,7 +48,7 @@ class VirtualProxy
     end
 
     def subject
-        @subject ||  (@subject = BankAccount.new(@initialbalance))
+        @subject ||  (@subject = @creator.call)
     end
 end
 
@@ -75,7 +61,7 @@ bap.deposit(10)
 bap.withdraw(50)
 puts bap.inspect
 
-vap = VirtualProxy.new(1000)
+vap = VirtualProxy.new{BankAccount.new(100)}
 vap.deposit(10)
 vap.withdraw(50)
 puts vap.inspect
