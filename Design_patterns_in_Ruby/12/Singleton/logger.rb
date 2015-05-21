@@ -30,11 +30,8 @@ class Logger
     def self.instance
         @@instance
     end
-end
 
-logger = Logger.new
-logger.level = Logger::INFO
-logger.info("First line")
-logger.info("second line")
+    private_class_method :new
+end
 
 Logger.instance.warning("third line")
