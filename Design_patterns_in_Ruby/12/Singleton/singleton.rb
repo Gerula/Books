@@ -14,7 +14,7 @@ class VariableTester
         "Instance:#{@instance_count} Class:#{@@class_count}"
     end
 
-    def self.static_method
+    def self.static_method # it also works with VariableTester.static_method but self is better as if you change the class name you don't have to change this
         puts "#{self}"
     end
 
