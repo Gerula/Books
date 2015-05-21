@@ -1,7 +1,46 @@
-class Enhanced_writer
+class Writer_decorator
+    def initialize(writer)
+        @writer = writer
+    end
+
+    def write_line(line)
+        @writer.write_line(line)
+    end
+
+    def pos
+        @writer.pos
+    end
+
+    def rewind
+        @writer.rewind
+    end
+
+    def close
+        @writer.close
+    end
+end
+
+class Numbering_writer < Writer_decorator
+    def initialize(writer)
+        super(writer)
+        @line = 0
+    end
+
+    def write_line(line)
+        @writer.write_line("#{@line} - #{line}")
+        @line += 1
+    end
+end
+
+class TimeStamp_writer < Writer_decorator
+    def write_line(line)
+        @writer.write_line("#{Time.new} - #{line}")
+    end
+end
+
+class Simple_writer
     def initialize(path)
         @file = File.open(path, "w")
-        @line_number = 1
     end
 
     def write_line(line)
@@ -9,13 +48,12 @@ class Enhanced_writer
         @file.print("\n")
     end
 
-    def time_stamp_write_line(line)
-        write_line("#{Time.new} - #{line}")
+    def pos
+        @file.pos
     end
 
-    def line_number_write_line(line)
-        write_line("#{@line_number} - #{line}")
-        @line_number += 1
+    def rewind
+        @file.rewind
     end
 
     def close
@@ -23,11 +61,13 @@ class Enhanced_writer
     end
 end
 
-writer = Enhanced_writer.new("test")
+writer = Simple_writer.new("test")
+numbering = Numbering_writer.new(writer)
+timing = TimeStamp_writer.new(writer)
 writer.write_line("Enhanced_writer")
-writer.time_stamp_write_line("Time stamp")
-writer.line_number_write_line("line")
-writer.line_number_write_line("line")
+timing.write_line("Time stamp")
+numbering.write_line("line")
+numbering.write_line("line")
 writer.close
 puts File.open("test", "r").read
 File.delete("test")
