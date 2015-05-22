@@ -1,6 +1,13 @@
 require 'find'
 
 class Expression
+    def |(other)
+        Or.new(self, other)
+    end
+
+    def &(other)
+        And.new(self, other)
+    end
 end
 
 class All < Expression
@@ -80,7 +87,6 @@ class And < Expression
         @expression1.evaluate(dir) & @expression2.evaluate(dir)
     end
 end
-
 
 puts FileName.new("*.rb").evaluate("../../../")
 puts And.new(Not.new(BigFile.new(100)),FileName.new("*master")).evaluate("../../../")
