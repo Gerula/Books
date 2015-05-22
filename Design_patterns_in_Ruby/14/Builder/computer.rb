@@ -67,6 +67,23 @@ class ComputerBuilder
     def add_hdd(size)
         @computer.drives << Drive.new(:hdd, size, true)
     end
+
+    def computer
+        raise("No drives ") if !@computer.drives.any?
+        @computer
+    end
+
+    def method_missing(name, *args)
+        words = name.to_s.split("_")
+        return nil unless words.shift == "add"
+        words.each {|word|
+            next if word == "and"
+            add_dvd if word == "dvd"
+            display = :ldc if word == "lcd"
+            turbo if word == "turbo"
+            add_hdd(10000) if word == "hdd"
+        }
+    end
 end
 
 # build a rocketship
@@ -83,3 +100,7 @@ builder.memory_size = 10000000000
 builder.add_dvd(true)
 builder.add_hdd(10000000)
 puts builder.computer.inspect
+
+magic_builder = ComputerBuilder.new
+magic_builder.add_dvd_and_add_lcd_and_add_hdd_and_add_turbo
+puts magic_builder.computer.inspect
