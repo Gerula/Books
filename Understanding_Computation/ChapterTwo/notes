@@ -1,0 +1,16 @@
+LOL - Bruce Lee quotes haha
+
+Bit of phylosophy here and there but the dude has a point. There's way too much trial and error when programming. You just tinker with it until it kinda works. This is also known as 'haking'.
+
+I forgot most of the things I was too smart to learn in college. TO SPECIFY A PROGRAM YOU NEED TO PROVIDE A SYNTAX AND A SEMANTICS.
+
+Ruby doesn't have an official spec. It's all based on Matz's interpreter. If a manual and the MRI are in dissagereement the MRI is wrong.
+It's kinda like how I do things. The truth is in the code (or the unit tests - but mostly in the code). If the spec says otherwise, the spec needs to change - I actually did that at work. Brought me great success!
+
+Well.. that escalated quickly.. The tone of the book is weird. It's kinda aimed at people who don't know how to prgram and then just jumps into ASTs, formal languages and stuff
+
+Ok so a struct is not a C struct.
+It's a class which if you subclass you get getters and setters? Oh why?
+
+Good one. Class names must start with uppercase but the error says must be CONSTANT.
+
