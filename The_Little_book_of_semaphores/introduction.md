@@ -36,7 +36,8 @@ as observers, the events happened within the same timeframe with no order define
 ## 1.4 Non-determinism
 
 Concurrent programs are non-deterministic - it's impossible to tell by looking at the program what will be the exact
-ordering of the parallel instructions due to the non-deterministic nature of the scheduler or the compiler optimizations.
+ordering of the parallel instructions due to the non-deterministic (it's actually deterministic from the theoretical standpoint but 
+it seems non-deterministic due to how it works and all the parameters involved) nature of the scheduler or the compiler optimizations.
 
 ## 1.5 Shared variables
 
