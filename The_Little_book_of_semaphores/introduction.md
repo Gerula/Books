@@ -41,4 +41,61 @@ it seems non-deterministic due to how it works and all the parameters involved) 
 
 ## 1.5 Shared variables
 
+Processes don't have access to other processes memory but threads which belong to the same process share 
+the processes memory. This means that variables can be shared between threads.
+
+If threads are not synchronized if they are reading a value from the variable it's impossible to tell by looking at the
+program if there is a guarantee that the latest value will be read or not thus many programs enforce the constraint that
+the reader should wait for the writer to finish before reading the value.
+
+Other scenarios are concurrent writes (multiple writers) and concurrent updates (multiple reader-writers).
+
+### 1.5.1 Concurrent writes
+
+A
+
+```
+a1 x = 5
+a2 print x
+```
+B
+
+```
+b1 x = 7
+```
+
+What path prints and yields 5? b1 -> a1 -> a2
+What path prints and yields 7? a1 -> b1 -> a2
+Is there a path that prints 7 and yields 5?  No.
+Prove it: Assuming there is such a path this would mean that a2 happens before a1.
+At least the C# spec guarantees that instructions would not be reordered to the extent of observable effects
+whithin the current thread.
+
+### 1.5.2 Concurrent updates
+
+Basically update (read then write based on the read) if not atomic it spells trouble because two unsynchronized threads doing 
+
+```
+temp = x
+x = temp + 1
+```
+
+will have unexpected results.
+
+Fortunately there is Interlocked.Increment.
+
+### 1.5.3 Mutual exclusion with message passing
+
+Just like serialization, mutual exclusion can also be implemented with message passing.
+
+You and Bob operate a nuclear plant and monitor the warnings. Both allowed to eat lunch but never at the same time.
+
+Figure out a system of message passing (phone calls) that enforces these restraints.
+What's the min number of messages?
+
+```
+send "want to eat"
+\\ will sleep on this one..
+```
+
 
