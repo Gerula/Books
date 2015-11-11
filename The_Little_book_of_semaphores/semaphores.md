@@ -63,5 +63,9 @@ Or V and P if you speak freaky dicky dutch.
 
 So in C# it is generally recommended to use SemaphoreSlim class as it's more lightweight (due to the fact that it cannot
 span processes - cannot be a named semaphore). Need to dig deeper into this, probably look at the source code.
+haha! Looked at the [source code](http://referencesource.microsoft.com/#mscorlib/system/threading/SemaphoreSlim.cs,d57f52e0341a581f) 
+and the findings are:
+- Semaphore is indeed using a kernel dispatch object
+- SemaphoreSlim is implemented from scratch in the runtime using locks, events and counters along with support for async methods
 
 Semaphores are implemented by using APIs exposed through Kernel32 manipulating Kernel Dispatch Objects.
