@@ -109,7 +109,185 @@ Notes on the solution from the book (crushed it, btw):
 Puzzle (yay!): Generalize the previous solution but allow a maximum of n threads inside the critical section (it's no longer a critical section
 but whatever, man).
 
-I'll leave this for tomorrow night but thankfully C# has max value in the semaphore. This pseudo code doesn't.
-So it's either invert by having the semaphore start with n or do a critical section on the count.
+~~I'll leave this for tomorrow night but thankfully C# has max value in the semaphore. This pseudo code doesn't.
+So it's either invert by having the semaphore start with n or do a critical section on the count.~~
 
+I was right:
+
+```
+bouncer = semaphore(n)
+
+A:                      
+1. mufex.wait()        
+2. party()
+3. mufex.signal()     
+```
+but the order in line is not guaranteed.
+
+## 3.5 Barrier
+
+Generalize the rendezvous solution to allow for:
+
+```
+rendezvous
+criticalpoint
+```
+So there are n threads. All of them should wait for each other at rendezvous and then all of them proceed.
+This is tricky. In C# it's easy, just set to 0, create N threads all of them waiting for the semaphore and then
+release n on the semaphore in the main thread.
+
+My solution below:
+
+```
+barrier = semaphore(0)
+count = 0
+mutex = semaphore(1)
+
+1. mutex.wait()
+2. count = count + 1
+3. if count == n - 1
+4. barrier.signal()
+5. mutex.signal()
+6. barrier.wait()
+```
+Which was bad as it doesn't reactivate the barrier.
+
+### 3.5.1 Non-solution:
+
+```
+barrier = semaphore(0)
+count = 0
+mutex = semaphore(1)
+
+1. mutex.wait()
+2. count = count + 1
+3. mutex.signal()
+4. if count == n - 1
+5.      barrier.signal()
+6. barrier.wait()
+```
+Puzzle: why is this wrong? ~~Because it reads count outside of the critical section.~~ Wrong! Deadlock.
+
+Right solution:
+```
+barrier = semaphore(0)
+count = 0
+mutex = semaphore(1)
+
+1. mutex.wait()
+2. count = count + 1
+3. mutex.signal()
+4. if count == n - 1
+5.      barrier.signal()
+6. barrier.wait()
+7. barrier.signal()
+```
+Notes:
+- this is called a **turnstile** as it allows one thread to go at a time and each thread activates the next.
+- Indeed, it does seem dangerous to read count outside of the mutex (I knew it! I fucking knew it) but in this case it's fine as we don't care which thread starts the turnstile.
+- also, if you put the turstile inside the mutex you're fucked in a deadlock as the mutex remains locked for the other threads and the locking thead waits on the turnstile.
+
+## 3.6 Reusable barrier
+
+The previous solution leaves the turnstile open. Make it reusable by closing it.
+
+My solution:
+
+```
+barrier = semaphore(0)
+count = 0
+mutex = semaphore(1)
+
+1. mutex.wait()
+2. count = count + 1
+3. mutex.signal()
+4. if count == n - 1
+5.      barrier.signal()
+6. barrier.wait()
+7. if count != n - 1
+8.      barrier.signal()
+```
+
+Geez I must be fucking stupid.
+
+Solution:
+```
+barrier_1 = semaphore(0)
+barrier_2 = semaphore(1)
+mutex = semaphore(1)
+
+1.      mutex.wait()
+2.      count = count + 1
+3.          if count == n - 1
+4.              barrier_2.wait()
+5.              barrier_1.signal()
+6.      mutex.signal()
+7.      barrier_1.wait()
+8.      barrier_1.signal()
+9.      mutex.wait()
+10.         count = count - 1
+11.         if count == 0
+12.             barrier_1.wait()
+13.             barrier_2.signal()
+14.     mutex.signal()
+15.     barrier_2.wait()
+16.     barrier_2.signal()
+```
+
+Wow :(.
+
+This is called a two-phase barrier. Then a whole paragraph describing how all non-trivial sync is fucky like this one, than formal proof is lunacy and that we need to rely on these types of patterns.
+
+A simpler solution appears out of nowhere if we preload the second barrier with the right number of threads. Also the previous solution does more context switching than necessary.
+I'll write this one myself.
+
+```
+barrier_1 = semaphore(0)
+barrier_2 = semaphore(n - 1)
+mutex = semaphore(1)
+
+1.      mutex.wait()
+2.      count = count + 1
+3.          if count == n - 1
+4.              barrier_1.signal()
+5.      mutex.signal()
+6.      barrier_1.wait()
+7.      barrier_1.signal()
+8.      mutex.wait()
+9.         count = count - 1
+10.         if count == 0
+11.             barrier_2.wait()
+12.     mutex.signal()
+13.     barrier_2.wait()
+```
+
+Ok, didn't write it myself, I looked at the book.
+
+## 3.7 Queue
+
+Semaphores can be used to represent a queue. The initial value is 0 and it is not possible to release unless there is a thread
+waiting so the value of the semaphore is never positive.
+
+There is a dance and there are two queues - leaders and followers. When a leader arrives it checks to see if there is a follower
+if there is they can both proceed, otherwise it waits. Similarily for a follower. Implement this filth.
+
+```
+leaders = semaphore(0)
+followers = semaphore(0)
+
+Leader                      Follower
+1. followers.signal()       1. leaders.wait()
+2. leaders.wait()           2. followers.signal()
+3. dance()                  3. dance()
+```
+
+I smell something bad about this...
+Not doing the extension.
+
+## 3.8 FIFO queue
+
+When a semaphore is signaled there is no way to tell which thread gets to run first. The runtime makes no guarantee (at least in C#)
+but we can implement this ourselves.
+
+Implement it. I actually had to implement this in an interview. I'll do it in C#, [here](implementations/fifoqueue.cs)
 
