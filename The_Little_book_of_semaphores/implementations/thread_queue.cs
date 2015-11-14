@@ -9,32 +9,35 @@ using System.Threading;
 
 class TQueue
 {
-    private Mutex access = new Mutex();
-    private Queue<Mutex> queue = new Queue<Mutex>();
+    private Object padlock = new Object();
+    private Queue<Tuple<SemaphoreSlim, int>> queue = new Queue<Tuple<SemaphoreSlim, int>>();
 
-    public void Wait()
+    public void Wait(int i)
     {
-        access.WaitOne();
-        var mutex = new Mutex();
-        queue.Enqueue(mutex);
-        access.ReleaseMutex();
-        
-        mutex.WaitOne();
+        var sem = new SemaphoreSlim(0);
+
+        lock (padlock) 
+        {
+            Console.WriteLine("Added {0}", i);
+            queue.Enqueue(Tuple.Create(sem, i));
+        } 
+
+        sem.Wait();
     }
 
     public void Signal()
     {
-        Mutex result = null;
-        access.WaitOne();
-        if (queue.Count > 0)
+        Tuple<SemaphoreSlim, int> result = null;
+        lock (padlock)
         {
-            result = queue.Dequeue();
+            if (queue.Count > 0)
+            {
+                result = queue.Dequeue();
+                Console.WriteLine("Removed {0}", result.Item2);
+            }
         }
-        access.ReleaseMutex();
-        
-        if (result != null) {
-        result.ReleaseMutex();
-        }
+
+        result.Item1.Release();
     }
 
     static void Main()
@@ -43,13 +46,13 @@ class TQueue
         var threads = Enumerable.
                         Range(1, 5).
                         Select(x => new Thread(() => {
-                                    Console.Write("x => {0} ", x);
-                                    q.Wait();
-                                    Console.Write("x => {0} ", x);
+                                    q.Wait(x);
                                 })).ToList();
         
         threads.ForEach(x => x.Start());
         Console.WriteLine();
-        threads.ForEach(x => q.Signal());
+        threads.ForEach(x => { 
+                    q.Signal();  
+                });
     }
 }
