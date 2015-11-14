@@ -291,5 +291,5 @@ but we can implement this ourselves.
 
 Implement it. I actually had to implement this in an interview. Too lazy to write it up (who knows maybe i'll do it tomorrow when it's fun time)
 too much overhead but basically each thred has it's own semaphore which it adds it to the queue when it waits. At signal on the queue
-it will signal the unqueued semaphore. Enqueue and dequeue must happen inside critical sections. Solution (kinda because \m/(><)\m/) [here] (/implementations/thread_queue.cs)
+it will signal the unqueued semaphore. Enqueue and dequeue must happen inside critical sections. Solution (kinda because \m/(><)\m/) [here] (implementations/thread_queue.cs)
 
