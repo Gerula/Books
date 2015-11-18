@@ -204,3 +204,96 @@ mutex.Wait()
 mutex.Signal()
 
 ```
+
+I'm going over this as it's using the turnstile pattern which I don't think it's fair.
+
+This needs to be revisited as it's very fucky. Maybe read it from Tanenbaum's book or something...
+
+## 4.3 No starve mutex
+
+We discussed **categorical starvation** which means that a certain category of threads may never run (thus starve).
+We will talk about **thread starvation** in general now.
+
+Partially starvation is also related to the scheduler as if the scheduler does not schedule a thread it will starve regardless of synchronization mechanisms.
+
+**Property one** - if there is only a thread that is ready to run then the scheduler has to let it run.
+
+**Property two** - if a thread is ready to run then the time it waits to run is finite / bounded.
+
+**Property three** - if a thread signales a semaphore on which other threads are waiting, one of the waiting threads needs to be woken.
+
+Consider the following starvation case:
+
+```
+while true
+    mutex.wait
+    do_stuff
+    mutex.signal
+```
+
+A, B and C are running this. A goes first, does stuff while B and C wait. Then A signals and B gets woken. The same way
+B does stuff while A and C wait. B unlocks and A gets woken. C starves. Poor C.
+
+**Property four** - if a thread is waiting on a semaphore, the number of threads that will be woken before it is bounded.
+
+For example, in the code above if the mutex keeps a FIFO structure then when C will get scheduled before A as it came first.
+
+A semaphore with property three is called a **weak semaphore** (DYEL semaphore) and a semaphore with property four is a **strong semaphore**.
+Dijkstra conjectured that it's impossible to solve the starvation problem with weak semaphores but in 1979 Morris proved it wrong
+assuming that the total number of threads is finite.
+
+Fun fun fun, let's prove Dijkstra wrong (Dijkstra was awesome btw, I can't believe this bullshit).
+Write a solution to the mutual exclusion problem with weak semaphores. 
+The code should have the following guarantee: once a thread arrives and attempts to enter the mutex there is a bound on the 
+number of threads that can proceed ahead of it. The total number of threads is finite.
+
+### 4.3.1 Hint
+
+This is heavy shit so I'll just read it.
+
+It uses two waiting rooms before the critical section and there are two phases:
+- first phase the first turnstile is open and the second is closed so all threads accumulate in room 1.
+- second phase first turnstile is closed and no other threads can enter and the second is open so threads can enter the critical section.
+
+So although there may be an arbitrary number of threads in the waiting room, each one is guaranteed to enter the critical section
+before any future arrivals.
+
+```
+room_one_count = 0
+room_two_count = 0
+mutex = semaphore(1)
+room_one = semaphore(1)
+room_two = semaphore(0)
+
+Thread:
+
+mutex.wait()
+    room_one_count ++
+mutex.signal()
+
+room_one.wait()
+    room_two_count ++
+    mutex.wait()
+        room_one_count --
+        if room_one_count == 0
+            mutex.signal()
+        else
+            mutex.signal()
+            room_one.signal()
+
+room_two_wait()
+    room_two_count --
+
+    ### critical section over here
+
+    if room_two_count == 0
+        room_one.signal()
+    else
+        room_two.signal()
+```
+
+Wow! This is genius. I need to do this by hand to better understand it. Also, make this into an implementation is C# [here](implementations/strong_semaphore.cs)
+
+## 4.4 Dining philosophers 
+
+I'll leave this one for when I'm clear headed.
