@@ -296,4 +296,193 @@ Wow! This is genius. I need to do this by hand to better understand it. Also, ma
 
 ## 4.4 Dining philosophers 
 
-I'll leave this one for when I'm clear headed.
+~~I'll leave this one for when I'm clear headed.~~
+
+Table, five plates, five forks and bowl of food. Five philosophers need to eat (threads) and do the following:
+
+```
+while true
+    think()
+    get_forks()
+    eat()
+    put_forks()
+```
+
+Forks are the resources which threads need to hold exclusively in order to eat and make progress.
+What makes the problem 1. interesting 2. unrealistic 3. unsanitary is that each philosopher needs two forks in order to eat.
+
+Constraints:
+- at most one thread can hold the fork at any given time
+- no deadlock
+- no starvation
+- it must be possible for more than one philosopher to eat at a time
+
+Last requirement basically says that you should have max concurrency (which would be 2).
+Eat, think are finite.
+
+```
+left(i) = i
+right(i) = (i + 1) mod 5
+forks = semaphore[5](1)
+```
+
+non-solution:
+
+```
+get_forks:
+    semaphore[left(i)].wait()
+    semaphore[right(i)].wait()
+
+put_forks:
+    semaphore[left(i)].signal()
+    semaphore[right(i)].signal()
+```
+
+Why is this wrong?
+
+### 4.4.1 Deadlock
+
+The table is round (mod 5 wraps around) so each thread will wait for the right semaphore which may never be released as it is being
+locked.
+
+Write a solution to this deadlock.
+
+### 4.4.2 Hint
+
+If only 4 are allowed at the table at any time then there's no deadlock.
+Write this
+
+```
+num = 0
+mutex = semaphore(1)
+table = semaphore(0)
+
+get_forks:
+    mutex.wait()
+        num++
+        if num == 4
+            table.wait()
+    mutex.signal()
+    semaphore[left(i)].wait()
+    semaphore[right(i)].wait()
+
+put_forks:
+    semaphore[left(i)].signal()
+    semaphore[right(i)].signal()
+    mutex.wait()
+        num--
+        if num == 3
+            table.signal()
+    mutex.signal()
+```
+
+This was mine.
+Below is the multiplex pattern which I went over but of course forgot because I keep my head in my ass. It's just a basic fucking semaphore.
+
+```
+table = semaphore(4)
+
+get_forks:
+    table.wait()
+    semaphore[left(i)].wait()
+    semaphore[right(i)].wait()
+
+put_forks:
+    semaphore[left(i)].signal()
+    semaphore[right(i)].signal()
+    table.signal()
+```
+
+Another interesting solution: rightie and leftie.
+
+If there is at least one leftie and at least one rightie there is no deadlock.
+
+```
+table = semaphore(4)
+
+get_forks:
+    if i == 0
+        semaphore[left(i)].wait()
+        semaphore[right(i)].wait()
+    else
+        semaphore[right(i)].wait()
+        semaphore[left(i)].wait()
+        
+put_forks:
+    semaphore[left(i)].signal()
+    semaphore[right(i)].signal()
+```
+This is fucked up
+
+### 4.4.5 Tanenbaum's solution:
+
+```
+states = [thinking] * 5
+sem = semaphore[5](0)
+mutex = semaphore(1)
+
+get_forks:
+    mutex.wait()
+    state[i] = hungry
+    test(i)
+    mutex.signal()
+    sem(i).wait()
+
+put_forks:
+    mutex.wait()
+    state[i] = thinking
+    test(right(i))
+    test(left(i))
+    mutex.signal()
+
+test(i)
+    if state[i] == hungry AND
+       state[left(i)] != eating AND
+       state[right(i)] != eating
+        
+       state[i] = eating
+       sem[i].signal()
+```
+
+The test function checks to see if the current thread needs to be eating. If it does and if the neighbors are not eating it can eat.
+If it does it signals it's semaphore therefore unblocking itself (more on that next).
+
+There are two ways a thread gets to the critical section (eating):
+1. executes get_forks finds the forks available (none of its neighbors are eating) and proceeds to the critical section. As we can see, it increments is semaphore and decrements right at exit from the function.
+2. one of the neighbors is eating so the thread blocks on its own semaphore. Eventually one of the neighbors will finish at which point  
+it will call test on both neighbors and it is possible that both can eat at the same time. Neat!
+
+In order to access state and run test a thread needs to lock on the mutex. So no threads can access that part at the same time and
+therefore checking and updating the states is atomic. 
+
+There is no deadlock as the only semaphore accessed by more than one thread is mutex and no thread executes wait while holding mutex.
+
+Puzzle: what about starvation? No fucking clue :(
+
+### 4.4.6 Starving tanenbaums
+
+Tanenbaum got pwned in 1990 by some dude which proved that this solution is vulnerable to starvation.
+
+I need to read this Armando R. Gingras. Dining philosophers revisited. ACM SIGCSE Bul- letin, 22(3):21–24, 28, September 1990.  
+as the explanation from the book truly sucks.
+
+It's [here](http://www.researchgate.net/publication/234786610_Dining_philosophers_revisited).
+
+OK. So the 'proof' is a counter-example thread scheduling pattern:
+
+```
+EATING  HUNGRY
+4 2     0 1 3
+2 0     1 3 4
+3 0     1 2 4
+0 2     1 3 4
+4 2     1 2 3
+```
+So because 1 can starve and there is no logical gate blocking this from happening in the algorithm there you go: fucking starvation.
+
+Implementations for this:
+1. [bounded - arbiter or whatever](implementations/dining_philosophers_bounded.cs)
+2. [leftie](implementations/dining_philosophers_leftie.cs)
+3. [tanenbaums](implementations/dining_tanenbaums.cs)
+
+
