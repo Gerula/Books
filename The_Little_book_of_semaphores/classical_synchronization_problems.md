@@ -150,7 +150,7 @@ that there are no other readers for sure (it's the first reader) so there is a w
 - in the end, the reader will decrement the number of readers anf if it's the last reader then it will signal that the room is empty
 thus letting know any of the waiting writers that it's free to write now.
 - this pattern in which for a series of threads the first one locks a resource and the last one unlocks a resource is often called
-a **lightswitch**. The book implements it so I also implement it and rewrite the solution [here](implementations/reders_writers_1.cs).
+a **lightswitch**. The book implements it so I also implement it and rewrite the solution [here](implementations/readers_writers_1.cs).
 
 ### 4.2.3 Starvation
 
